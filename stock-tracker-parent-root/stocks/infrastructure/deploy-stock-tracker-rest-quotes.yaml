@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   creationTimestamp: null
+   labels:
+      app: rest-quotes
+   name: rest-quotes
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: rest-quotes
+   strategy: {}
+   template:
+      metadata:
+         creationTimestamp: null
+         labels:
+            app: rest-quotes
+      spec:
+         containers:
+         -  image: quay.io/stocktracker/rest-quotes:1.0
+            imagePullPolicy: Always
+            name: rest-quotes
+            resources: {}
+            ports:
+            -  containerPort: 8082
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: rest-quotes
+spec:
+   selector:
+      app: rest-quotes
+   ports:
+   -  protocol: TCP
+      port: 8082
+      targetPort: 8082

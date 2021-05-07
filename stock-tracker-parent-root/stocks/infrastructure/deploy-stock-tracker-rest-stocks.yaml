@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   creationTimestamp: null
+   labels:
+      app: rest-stocks
+   name: rest-stocks
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: rest-stocks
+   strategy: {}
+   template:
+      metadata:
+         creationTimestamp: null
+         labels:
+            app: rest-stocks
+      spec:
+         containers:
+         -  image: quay.io/stocktracker/rest-stocks:1.0
+            imagePullPolicy: Always
+            name: rest-stocks
+            resources: {}
+            ports:
+            -  containerPort: 8081
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: rest-stocks
+spec:
+   selector:
+      app: rest-stocks
+   ports:
+   -  protocol: TCP
+      port: 8081
+      targetPort: 8081

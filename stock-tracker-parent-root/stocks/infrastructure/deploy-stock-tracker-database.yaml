@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   creationTimestamp: null
+   labels:
+      app: stocks-database
+   name: stocks-database
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: stocks-database
+   strategy: {}
+   template:
+      metadata:
+         creationTimestamp: null
+         labels:
+            app: stocks-database
+      spec:
+         containers:
+         -  image: mysql:latest
+            imagePullPolicy: Always
+            name: stocks-database
+            resources: {}
+            ports:
+            -  containerPort: 3306
+            env:
+            -  name: MYSQL_ROOT_HOST
+               value: '%'
+            -  name: MYSQL_ROOT_PASSWORD
+               value: rootpw
+            -  name: MYSQL_DATABASE
+               value: stocks_database
+            -  name: MYSQL_USER
+               value: stocktracker
+            -  name: MYSQL_PASSWORD
+               value: stocktracker
+         imagePullSecrets:
+         -  name: docker
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: stocks-database
+spec:
+   selector:
+      app: stocks-database
+   ports:
+   -  protocol: TCP
+      port: 3306
+      targetPort: 3306
