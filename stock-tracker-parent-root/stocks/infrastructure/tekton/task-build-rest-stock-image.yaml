@@ -24,13 +24,8 @@ spec:
       script: |
          #!/usr/bin/env bash
          
-          echo "DOCKER USERNAME: $DOCKER_USERNAME"
-
          cmd="sed -i -e s@__DOCKER_USERNAME__@${DOCKER_USERNAME}@g ./src/main/resources/application.properties"
-         echo "Replace Docker Username Command: ${cmd}"
-         ${cmd}
-         
-         cmd="cat ./src/main/resources/application.properties"
+         echo "Replacing Docker Username in Application Properties..."
          ${cmd}
       env: 
       - name: DOCKER_USERNAME 
@@ -44,13 +39,8 @@ spec:
       script: |
          #!/usr/bin/env bash
          
-         echo "DOCKER_PASSWORD: $DOCKER_PASSWORD"
-         
          cmd="sed -i -e s@__DOCKER_PASSWORD__@${DOCKER_PASSWORD}@g ./src/main/resources/application.properties"
-         echo "Replace Docker Password Command: ${cmd}"
-         ${cmd}
-         
-         cmd="cat ./src/main/resources/application.properties"
+         echo "Replacing Docker Password in Application Properties..."
          ${cmd}
       env: 
       - name: DOCKER_PASSWORD 
