@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: build-rest-quote-image
+spec:
+  inputs:
+    resources:
+      - name: source
+        type: git
+    params:
+      - name: context-dir
+        description: The context dir of the project containing the maven pom.xml file
+        default: stock-tracker-parent-root
+  results:
+    - name: image-name
+      description: Name of the container image                           
+  steps: 
+    - name: list-project-folder
+      image: busybox
+      command: ["ls", "-ltr", "/workspace/source/$(inputs.params.context-dir)"]
+    - name: update-docker-username
+      image: docker.io/maven:3.6.3-openjdk-15
+      workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-quotes"
+      script: |
+         #!/usr/bin/env bash
+         
+         cmd="sed -i -e s@__DOCKER_USERNAME__@${DOCKER_USERNAME}@g ./src/main/resources/application.properties"
+         echo "Replacing Docker Username in Application Properties..."
+         ${cmd}
+      env: 
+      - name: DOCKER_USERNAME 
+        valueFrom:
+           configMapKeyRef: 
+             name: docker-credentials 
+             key: dockerUsername        
+    - name: update-docker-password
+      image: docker.io/maven:3.6.3-openjdk-15
+      workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-quotes"
+      script: |
+         #!/usr/bin/env bash
+         
+         cmd="sed -i -e s@__DOCKER_PASSWORD__@${DOCKER_PASSWORD}@g ./src/main/resources/application.properties"
+         echo "Replacing Docker Password in Application Properties..."
+         ${cmd}
+      env: 
+      - name: DOCKER_PASSWORD 
+        valueFrom: 
+           configMapKeyRef: 
+             name: docker-credentials 
+             key: dockerPassword             
+    - name: build-push-container
+      image: docker.io/maven:3.6.3-openjdk-15
+      workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-quotes"
+      script: |
+         #!/usr/bin/env bash
+         
+         cmd="mvn -ntp clean package -DskipTests=true"
+         echo "Maven Build Command: ${cmd}"
+         pwd
+         ${cmd}                             
+  volumes:
+    - name: varlibc
+      emptyDir: {}    

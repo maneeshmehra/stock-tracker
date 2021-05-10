@@ -15,6 +15,9 @@ spec:
         inputs:
           - name: source
             resource: source-repo
+    - name: build-rest-quote
+      taskRef:
+        name: build-rest-quote-image        
       resources:
         inputs:
           - name: source
