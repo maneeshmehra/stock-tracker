@@ -19,23 +19,13 @@ spec:
       image: busybox
       command: ["ls", "-ltr", "/workspace/source/$(inputs.params.context-dir)"]
     - name: build-push-container
-      # image: docker.io/maven:3.6.3-openjdk-15
-      image: docker.io/centos:centos8
+      image: docker.io/maven:3.6.3-openjdk-15
       workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-stocks"
       script: |
          #!/usr/bin/env bash
-         yum remove docker docker-common docker-selinux docker-engine
-         yum install -y yum-utils device-mapper-persistent-data lvm2
-         yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-         yum -y install docker-ce docker-ce-cli containerd.io
-         yum install -y --setopt=obsoletes=0 docker-ce docker-ce-selinux
-         yum install -y java-11-openjdk-devel
-         java -version
-         yum install -y maven
-         mvn --version
-         cmd="mvn clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true"
+         # cmd="mvn -ntp clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true"
+         cmd="mvn -ntp clean jib:build"
          echo "Command: ${cmd}"
-         cd "/workspace/source/$(inputs.params.context-dir)/stocks/rest-stocks"
          pwd
          ${cmd}                             
   volumes:
