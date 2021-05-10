@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-build-and-deploy-services
+spec:
+  params:
+  resources:
+    - name: source-repo
+      type: git
+  tasks:     
+    - name: build-rest-stock
+      taskRef:
+        name: build-rest-stock-image
+      resources:
+        inputs:
+          - name: source
+            resource: source-repo
+      resources:
+        inputs:
+          - name: source
+            resource: source-repo                             
