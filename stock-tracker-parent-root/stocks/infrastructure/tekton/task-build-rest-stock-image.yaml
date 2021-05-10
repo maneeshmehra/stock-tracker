@@ -23,8 +23,8 @@ spec:
       workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-stocks"
       script: |
          #!/usr/bin/env bash
-         # cmd="mvn -ntp clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true"
-         cmd="mvn -ntp clean jib:build"
+
+         cmd="mvn -ntp clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true"
          echo "Command: ${cmd}"
          pwd
          ${cmd}                             
