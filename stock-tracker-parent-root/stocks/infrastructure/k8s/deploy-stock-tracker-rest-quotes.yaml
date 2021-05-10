@@ -18,7 +18,7 @@ spec:
             app: rest-quotes
       spec:
          containers:
-         -  image: quay.io/stocktracker/rest-quotes:1.0
+         -  image: docker.io/stocktracker/rest-quotes:1.0
             imagePullPolicy: Always
             name: rest-quotes
             resources: {}
