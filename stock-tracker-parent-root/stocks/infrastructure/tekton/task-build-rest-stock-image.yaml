@@ -18,14 +18,54 @@ spec:
     - name: list-project-folder
       image: busybox
       command: ["ls", "-ltr", "/workspace/source/$(inputs.params.context-dir)"]
+    - name: update-docker-username
+      image: docker.io/maven:3.6.3-openjdk-15
+      workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-stocks"
+      script: |
+         #!/usr/bin/env bash
+         
+          echo "DOCKER USERNAME: $DOCKER_USERNAME"
+
+         cmd="sed -i -e s@__DOCKER_USERNAME__@${DOCKER_USERNAME}@g ./src/main/resources/application.properties"
+         echo "Replace Docker Username Command: ${cmd}"
+         ${cmd}
+         
+         cmd="cat ./src/main/resources/application.properties"
+         ${cmd}
+      env: 
+      - name: DOCKER_USERNAME 
+        valueFrom:
+           configMapKeyRef: 
+             name: docker-credentials 
+             key: dockerUsername        
+    - name: update-docker-password
+      image: docker.io/maven:3.6.3-openjdk-15
+      workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-stocks"
+      script: |
+         #!/usr/bin/env bash
+         
+         echo "DOCKER_PASSWORD: $DOCKER_PASSWORD"
+         
+         cmd="sed -i -e s@__DOCKER_PASSWORD__@${DOCKER_PASSWORD}@g ./src/main/resources/application.properties"
+         echo "Replace Docker Password Command: ${cmd}"
+         ${cmd}
+         
+         cmd="cat ./src/main/resources/application.properties"
+         ${cmd}
+      env: 
+      - name: DOCKER_PASSWORD 
+        valueFrom: 
+           configMapKeyRef: 
+             name: docker-credentials 
+             key: dockerPassword             
     - name: build-push-container
       image: docker.io/maven:3.6.3-openjdk-15
       workingDir: "/workspace/source/$(inputs.params.context-dir)/stocks/rest-stocks"
       script: |
          #!/usr/bin/env bash
-
-         cmd="mvn -ntp clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true"
-         echo "Command: ${cmd}"
+         
+         cmd="mvn -ntp clean package -DskipTests=true"
+         echo "Maven Build Command: ${cmd}"
          pwd
          ${cmd}                             
   volumes:
