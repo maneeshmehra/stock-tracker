@@ -3,7 +3,6 @@ kind: PipelineRun
 metadata:
   name: pipelinerun-build-and-deploy-stock-tracker-services
 spec:
-  serviceAccountName: stock-tracker-service-account
   pipelineRef:
     name: pipeline-build-and-deploy-services
   params: 
