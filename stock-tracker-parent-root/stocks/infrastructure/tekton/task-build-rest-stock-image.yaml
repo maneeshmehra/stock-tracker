@@ -54,7 +54,7 @@ spec:
       script: |
          #!/usr/bin/env bash
          
-         cmd="mvn -ntp clean package -DskipTests=true"
+         cmd="mvn -ntp clean package"
          echo "Maven Build Command: ${cmd}"
          pwd
          ${cmd}                             
